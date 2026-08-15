@@ -12,6 +12,8 @@ export const TYPERT_MANIFEST: TypertContribution = {
         { kind: 'method', name: 'getStatus', signature: 'getStatus(): Promise<BeavStatus>' },
         { kind: 'method', name: 'listResources', signature: 'listResources(): Promise<readonly BeavResourceCandidate[]>' },
         { kind: 'method', name: 'openApp', signature: 'openApp(): Promise<boolean>' },
+        { kind: 'method', name: 'beginPairing', signature: 'beginPairing(): Promise<BeavPairingStatus>' },
+        { kind: 'method', name: 'getPairingStatus', signature: 'getPairingStatus(requestId: string): Promise<BeavPairingStatus>' },
         { kind: 'method', name: 'configureToken', signature: 'configureToken(token: string): Promise<BeavStatus>' },
         { kind: 'method', name: 'disconnect', signature: 'disconnect(): Promise<BeavStatus>' },
       ], types: [],

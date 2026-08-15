@@ -1,3 +1,4 @@
+import { createHash, randomBytes } from 'node:crypto'
 import type { CredentialProvider, CredentialRef } from '@deepseek-ai/dsh-credentials'
 import type {
   BeavArtifact, BeavCompletion, BeavDelegateInput, BeavProject, BeavRunStatus, BeavTask, BeavWorkspace,
@@ -18,6 +19,28 @@ export interface GatewayConfig {
   autoLaunch: 'never' | 'on-demand'
 }
 
+export interface PairingMaterial {
+  readonly requestId: string
+  readonly verifier: string
+  readonly challenge: string
+  readonly expiresAt: number
+}
+
+export interface GatewayPairingStatus {
+  readonly state: 'pending' | 'approved' | 'denied' | 'exchanged' | 'expired'
+  readonly expiresAt: number
+}
+
+export function createPairingMaterial(now = Date.now()): PairingMaterial {
+  const verifier = randomBytes(32).toString('base64url')
+  return {
+    requestId: randomBytes(24).toString('base64url'),
+    verifier,
+    challenge: createHash('sha256').update(verifier).digest('base64url'),
+    expiresAt: now + 5 * 60_000,
+  }
+}
+
 function record(value: unknown, label: string): Record<string, unknown> {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) throw new BeavGatewayError('INVALID_RESPONSE', `${label} response is invalid`)
   return value as Record<string, unknown>
@@ -34,10 +57,10 @@ function beavMessage(value: string): string {
 export class BeavGatewayClient {
   constructor(private readonly credentials: CredentialProvider, private readonly config: GatewayConfig) {}
 
-  private async request(path: string, init: RequestInit = {}, signal?: AbortSignal): Promise<Record<string, unknown>> {
+  private async request(path: string, init: RequestInit = {}, signal?: AbortSignal, authenticated = true): Promise<Record<string, unknown>> {
     const baseUrl = await discoverCreatorBaseUrl(this.config.endpoint)
     if (!baseUrl) throw new BeavGatewayError('NOT_RUNNING', 'Beav is not running or its Creator Gateway is disabled')
-    const resolved = await this.credentials.resolve(this.config.tokenRef)
+    const resolved = authenticated ? await this.credentials.resolve(this.config.tokenRef) : undefined
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(new Error('Beav request timed out')), this.config.requestTimeoutMs)
     const abort = () => controller.abort(signal?.reason)
@@ -78,6 +101,29 @@ export class BeavGatewayClient {
   unsetCredential() { return this.credentials.unset(this.config.tokenRef) }
 
   health(signal?: AbortSignal) { return this.request('/health', {}, signal) }
+
+  async pairingStatus(requestId: string, signal?: AbortSignal): Promise<GatewayPairingStatus> {
+    const body = await this.request(`/pairings/${encodeURIComponent(requestId)}`, {}, signal, false)
+    const pairing = record(body.pairing, 'pairing')
+    const state = text(pairing.state) as GatewayPairingStatus['state']
+    if (!['pending', 'approved', 'denied', 'exchanged', 'expired'].includes(state)) {
+      throw new BeavGatewayError('INVALID_RESPONSE', 'Beav pairing state is invalid')
+    }
+    return { state, expiresAt: Number(pairing.expiresAt) * 1_000 }
+  }
+
+  async exchangePairing(requestId: string, verifier: string, signal?: AbortSignal): Promise<string> {
+    const body = await this.request(`/pairings/${encodeURIComponent(requestId)}/exchange`, {
+      method: 'POST', body: JSON.stringify({ verifier }),
+    }, signal, false)
+    const token = text(body.token)
+    if (!token) throw new BeavGatewayError('INVALID_RESPONSE', 'Beav pairing credential is missing')
+    return token
+  }
+
+  async revokeCurrentClient(signal?: AbortSignal): Promise<void> {
+    await this.request('/clients/current/revoke', { method: 'POST', body: '{}' }, signal)
+  }
 
   async listWorkspaces(signal?: AbortSignal): Promise<BeavWorkspace[]> {
     const body = await this.request('/workspaces', {}, signal)

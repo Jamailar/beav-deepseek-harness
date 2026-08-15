@@ -7,7 +7,7 @@ export interface BeavStatusStore {
   subscribe(listener: () => void): () => void
   refresh(): void
   open(): void
-  connect(token: string): Promise<boolean>
+  connect(): Promise<boolean>
   disconnect(): Promise<void>
 }
 
@@ -15,15 +15,20 @@ export type BeavSettingsCardProps = PropsRuntime<'settings.plugin.item'> & { sto
 
 export function BeavSettingsCard({ store }: BeavSettingsCardProps) {
   const status = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot)
-  const [token, setToken] = useState('')
+  const [connecting, setConnecting] = useState(false)
+  const [connectionFailed, setConnectionFailed] = useState(false)
   return (
     <li style={{ listStyle: 'none', padding: 16, border: '1px solid var(--border, #d8d8d8)', borderRadius: 12 }}>
       <h3 style={{ margin: 0 }}>Beav</h3>
       <p style={{ margin: '6px 0' }}>{status.connected ? 'Connected' : 'Not connected'}{status.version ? ` · ${status.version}` : ''}</p>
       <p style={{ margin: '6px 0 12px', opacity: 0.75 }}>{status.message}</p>
-      {!status.configured ? <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
-        <input type="password" value={token} onChange={event => setToken(event.target.value)} placeholder="Beav Creator Token" autoComplete="off" />
-        <button type="button" disabled={!token.trim()} onClick={() => { void store.connect(token).then(ok => { if (ok) setToken('') }) }}>Connect</button>
+      {!status.configured ? <div style={{ marginBottom: 10 }}>
+        <button type="button" disabled={connecting} onClick={() => {
+          setConnecting(true)
+          setConnectionFailed(false)
+          void store.connect().then(ok => setConnectionFailed(!ok)).finally(() => setConnecting(false))
+        }}>{connecting ? 'Waiting for approval…' : 'Connect Beav'}</button>
+        {connectionFailed ? <span style={{ marginLeft: 8, opacity: 0.75 }}>Connection was not approved. Try again.</span> : null}
       </div> : null}
       <button type="button" onClick={store.refresh}>Refresh</button>
       <button type="button" onClick={store.open} style={{ marginLeft: 8 }}>Open Beav</button>

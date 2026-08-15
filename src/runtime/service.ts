@@ -2,9 +2,13 @@ import type { Context } from '@deepseek-ai/cordis'
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
 import open from 'open'
 import type {
-  BeavArtifact, BeavDelegateInput, BeavProject, BeavResourceCandidate, BeavStatus, BeavTask, BeavWorkspace,
+  BeavArtifact, BeavDelegateInput, BeavPairingStatus, BeavProject, BeavResourceCandidate, BeavStatus, BeavTask, BeavWorkspace,
 } from '../shared/contract.ts'
-import { BeavGatewayClient, BeavGatewayError, type GatewayConfig } from './gateway-client.ts'
+import { BeavGatewayClient, BeavGatewayError, createPairingMaterial, type GatewayConfig } from './gateway-client.ts'
+
+const PAIRING_SCOPES = [
+  'manifest:read', 'guide:read', 'session:read', 'session:write', 'run:read', 'run:write', 'artifact:read',
+] as const
 
 declare module '@deepseek-ai/cordis' {
   interface Context { beav: BeavService }
@@ -13,6 +17,7 @@ declare module '@deepseek-ai/cordis' {
 export class BeavService extends TypertRemoteService {
   private readonly gateway: BeavGatewayClient
   private statusCache?: { at: number; value: BeavStatus }
+  private readonly pairings = new Map<string, { verifier: string; expiresAt: number }>()
 
   constructor(ctx: Context, private readonly config: GatewayConfig) {
     super(ctx, 'beav')
@@ -88,6 +93,80 @@ export class BeavService extends TypertRemoteService {
     return true
   }
 
+  @Remote async beginPairing(): Promise<BeavPairingStatus> {
+    const material = createPairingMaterial()
+    this.pairings.set(material.requestId, { verifier: material.verifier, expiresAt: material.expiresAt })
+    const url = new URL('beav://connect/authorize')
+    url.searchParams.set('requestId', material.requestId)
+    url.searchParams.set('challenge', material.challenge)
+    url.searchParams.set('clientName', 'DeepSeek Harness')
+    url.searchParams.set('clientKind', 'deepseek_harness')
+    url.searchParams.set('scopes', PAIRING_SCOPES.join(','))
+    try {
+      await this.open(url.toString())
+    } catch (error) {
+      this.pairings.delete(material.requestId)
+      throw error
+    }
+    return {
+      requestId: material.requestId,
+      state: 'waiting-for-app',
+      message: 'Approve the connection in Beav.',
+      expiresAt: material.expiresAt,
+    }
+  }
+
+  @Remote async getPairingStatus(requestId: string): Promise<BeavPairingStatus> {
+    const pairing = this.pairings.get(requestId)
+    if (!pairing) {
+      return { requestId, state: 'failed', message: 'Pairing request is not active in this Harness process.', expiresAt: Date.now() }
+    }
+    if (Date.now() > pairing.expiresAt) {
+      this.pairings.delete(requestId)
+      return { requestId, state: 'expired', message: 'The Beav connection request expired. Try again.', expiresAt: pairing.expiresAt }
+    }
+    try {
+      const remote = await this.gateway.pairingStatus(requestId)
+      if (remote.state === 'pending') {
+        return { requestId, state: 'pending', message: 'Waiting for approval in Beav.', expiresAt: remote.expiresAt }
+      }
+      if (remote.state === 'denied') {
+        this.pairings.delete(requestId)
+        return { requestId, state: 'denied', message: 'The connection was denied in Beav.', expiresAt: remote.expiresAt }
+      }
+      if (remote.state === 'expired') {
+        this.pairings.delete(requestId)
+        return { requestId, state: 'expired', message: 'The Beav connection request expired. Try again.', expiresAt: remote.expiresAt }
+      }
+      if (remote.state === 'approved') {
+        const token = await this.gateway.exchangePairing(requestId, pairing.verifier)
+        await this.gateway.setCredential(token)
+        this.pairings.delete(requestId)
+        this.statusCache = undefined
+        const status = await this.status()
+        return {
+          requestId,
+          state: status.connected ? 'connected' : 'failed',
+          message: status.connected ? 'Connected to Beav.' : status.message,
+          expiresAt: remote.expiresAt,
+          status,
+        }
+      }
+      this.pairings.delete(requestId)
+      return { requestId, state: 'failed', message: 'This pairing credential was already exchanged.', expiresAt: remote.expiresAt }
+    } catch (error) {
+      if (error instanceof BeavGatewayError && ['NOT_RUNNING', 'UNREACHABLE', 'pairing_not_found'].includes(error.code)) {
+        return { requestId, state: 'waiting-for-app', message: 'Waiting for Beav to open.', expiresAt: pairing.expiresAt }
+      }
+      return {
+        requestId,
+        state: 'failed',
+        message: error instanceof Error ? error.message : 'Beav pairing failed.',
+        expiresAt: pairing.expiresAt,
+      }
+    }
+  }
+
   @Remote async configureToken(token: string): Promise<BeavStatus> {
     if (!token.trim()) throw new Error('Beav token cannot be empty')
     await this.gateway.setCredential(token.trim())
@@ -96,6 +175,8 @@ export class BeavService extends TypertRemoteService {
   }
 
   @Remote async disconnect(): Promise<BeavStatus> {
+    this.pairings.clear()
+    try { await this.gateway.revokeCurrentClient() } catch { /* local credential is still removed below */ }
     await this.gateway.unsetCredential()
     this.statusCache = undefined
     return this.status()

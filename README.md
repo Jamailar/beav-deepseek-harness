@@ -6,7 +6,7 @@ The native DeepSeek Harness connector for Beav. It exposes Beav workspaces, proj
 
 Requirements:
 
-- Beav 2.7.3 or later
+- Beav 2.7.4 or later
 - DeepSeek Harness `0.1.0-rc.6`
 - Node.js 22 or later
 
@@ -16,7 +16,7 @@ Install into a Harness profile:
 dsh plugin --profile web add beav-deepseek-harness
 ```
 
-Start that profile, open **Settings → Plugins → Beav**, and paste a Creator Gateway token created in Beav. Harness stores the token through its credentials provider under `BEAV_CREATOR_TOKEN`; this plugin never returns it to the browser after the write, adds it to a session event, or includes it in a tool result.
+Start that profile, open **Settings → Plugins → Beav**, and select **Connect Beav**. Harness opens `beav://connect/authorize`; Beav starts if needed and shows the requested permissions. After you approve in Beav, the connector completes a five-minute, single-use PKCE exchange and stores the resulting credential under `BEAV_CREATOR_TOKEN`. No token is copied through the clipboard, URL, browser client, chat, session event, or tool result.
 
 If Beav is not running, an operation that needs it opens `beav://open` once and performs a bounded health retry. You can override the local endpoint or credential reference in the profile patch:
 
@@ -36,7 +36,7 @@ Only loopback HTTP endpoints are accepted.
 
 - Ask naturally: “Use Beav to turn the latest knowledge in my launch workspace into an article, cover images, and a 60-second video.”
 - Type `@beav` to select a stable workspace or project reference.
-- Use `/beav status`, `/beav open`, `/beav workspaces`, `/beav new`, `/beav import`, or `/beav save` for direct actions without a model turn.
+- Use `/beav connect`, `/beav status`, `/beav open`, `/beav workspaces`, `/beav new`, `/beav import`, or `/beav save` for direct actions without a model turn.
 - Long-running work appears as a native Harness job and a replayable Beav task card.
 - Completion is accepted only after Beav reports durable artifact read-back verification and each returned artifact can be read back through the Creator Gateway.
 
@@ -44,7 +44,7 @@ Beav retains ownership of AI orchestration, knowledge access, media generation, 
 
 ## Trust and privacy
 
-This package runs as trusted local Host code. It connects only to Beav on loopback, requests bounded summaries, and never transfers raw media bytes through model tool parameters. The connector source is public so the community can audit the integration. The Beav desktop application, creator runtime, knowledge engine, media pipeline, and commercial services remain proprietary and are not included in this repository or npm package.
+This package runs as trusted local Host code. Pairing exposes only a local approval/status surface before authorization; creator operations still require a revocable client credential. Deep links contain a random request ID and PKCE challenge, never a token or verifier. The connector connects only to Beav on loopback, requests bounded summaries, and never transfers raw media bytes through model tool parameters. The connector source is public so the community can audit the integration. The Beav desktop application, creator runtime, knowledge engine, media pipeline, and commercial services remain proprietary and are not included in this repository or npm package.
 
 This is a community plugin and is not an official DeepSeek product or endorsement.
 

@@ -10,10 +10,10 @@ import { beavTaskDefinition } from './conversation.ts'
 import { BeavTaskNode } from './BeavTaskNode.tsx'
 import { BeavSettingsCard, type BeavStatusStore } from './BeavSettingsCard.tsx'
 
-export const inject = ['remote', 'reflect', 'slots', 'conversationEvents', 'inputTriggers']
+export const inject = ['remote', 'slots', 'conversationEvents', 'inputTriggers']
 
 const EMPTY_STATUS: BeavStatus = {
-  connected: false, configured: false, state: 'not-running', message: 'Start Beav and enable its Creator Gateway.',
+  connected: false, configured: false, state: 'not-running', message: 'Open Beav to connect.',
 }
 
 export function apply(ctx: ClientContext): void {
@@ -32,11 +32,22 @@ export function apply(ctx: ClientContext): void {
     subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener) },
     refresh() { void refresh() },
     open() { if (remote) void remote.openApp() },
-    async connect(token) {
+    async connect() {
       if (!remote) return false
-      const result = await remote.configureToken(token)
-      if (result.ok) publish(result.value)
-      return result.ok
+      const started = await remote.beginPairing()
+      if (!started.ok) return false
+      while (Date.now() <= started.value.expiresAt) {
+        await new Promise(resolve => setTimeout(resolve, 750))
+        if (!remote) return false
+        const result = await remote.getPairingStatus(started.value.requestId)
+        if (!result.ok) return false
+        if (result.value.state === 'connected' && result.value.status) {
+          publish(result.value.status)
+          return true
+        }
+        if (['denied', 'expired', 'failed'].includes(result.value.state)) return false
+      }
+      return false
     },
     async disconnect() {
       if (!remote) return

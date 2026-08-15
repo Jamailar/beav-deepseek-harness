@@ -71,6 +71,14 @@ export interface BeavResourceCandidate {
   readonly description?: string
 }
 
+export interface BeavPairingStatus {
+  readonly requestId: string
+  readonly state: 'waiting-for-app' | 'pending' | 'approved' | 'connected' | 'denied' | 'expired' | 'failed'
+  readonly message: string
+  readonly expiresAt: number
+  readonly status?: BeavStatus
+}
+
 const statusSchema = z.object({
   connected: z.boolean(),
   configured: z.boolean(),
@@ -85,6 +93,14 @@ const candidateSchema = z.object({
   kind: z.enum(['workspace', 'project']),
   name: z.string().min(1),
   description: z.string().optional(),
+}).readonly()
+
+const pairingSchema = z.object({
+  requestId: z.string().min(1),
+  state: z.enum(['waiting-for-app', 'pending', 'approved', 'connected', 'denied', 'expired', 'failed']),
+  message: z.string(),
+  expiresAt: z.number().int().positive(),
+  status: statusSchema.optional(),
 }).readonly()
 
 export const BEAV_INVOCATIONS: readonly InvocationDescriptor[] = [
@@ -102,6 +118,17 @@ export const BEAV_INVOCATIONS: readonly InvocationDescriptor[] = [
     id: 'beav-deepseek-harness#beav/openApp', service: 'beav', namespace: 'beav', method: 'openApp',
     invocation: { kind: 'direct' }, parameters: [],
     result: { mode: 'strict', typeSymbol: 'beav-deepseek-harness#boolean', schema: z.boolean() },
+  },
+  {
+    id: 'beav-deepseek-harness#beav/beginPairing', service: 'beav', namespace: 'beav', method: 'beginPairing',
+    invocation: { kind: 'direct' }, parameters: [],
+    result: { mode: 'strict', typeSymbol: 'beav-deepseek-harness#BeavPairingStatus', schema: pairingSchema },
+  },
+  {
+    id: 'beav-deepseek-harness#beav/getPairingStatus', service: 'beav', namespace: 'beav', method: 'getPairingStatus',
+    invocation: { kind: 'direct' },
+    parameters: [{ name: 'requestId', wire: 'requestId', source: 'json', codec: { mode: 'strict', typeSymbol: 'string', schema: z.string().min(1) } }],
+    result: { mode: 'strict', typeSymbol: 'beav-deepseek-harness#BeavPairingStatus', schema: pairingSchema },
   },
   {
     id: 'beav-deepseek-harness#beav/configureToken', service: 'beav', namespace: 'beav', method: 'configureToken',

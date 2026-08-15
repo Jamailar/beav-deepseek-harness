@@ -11,7 +11,7 @@ export function registerCommands(ctx: Context): void {
   ctx.commands.register({
     name: 'beav',
     description: 'Check, open, or send work to Beav without a model turn.',
-    input: { hint: 'status | open | workspaces | new <request> | import <url> | save <url>' },
+    input: { hint: 'status | connect | open | workspaces | new <request> | import <url> | save <url>' },
     async handler({ rawInput, signal }) {
       const input = rawInput.trim()
       const space = input.indexOf(' ')
@@ -25,6 +25,16 @@ export function registerCommands(ctx: Context): void {
         if (command === 'open') {
           await ctx.beav.open()
           return { kind: 'success', text: 'Opened Beav.' }
+        }
+        if (command === 'connect') {
+          const started = await ctx.beav.beginPairing()
+          while (!signal.aborted && Date.now() <= started.expiresAt) {
+            await new Promise(resolve => setTimeout(resolve, 750))
+            const pairing = await ctx.beav.getPairingStatus(started.requestId)
+            if (pairing.state === 'connected') return { kind: 'success', text: 'Connected to Beav.' }
+            if (['denied', 'expired', 'failed'].includes(pairing.state)) return { kind: 'error', text: pairing.message }
+          }
+          return { kind: 'error', text: signal.aborted ? 'Beav connection was cancelled.' : 'Beav connection request expired.' }
         }
         if (command === 'workspaces') {
           const workspaces = await ctx.beav.listWorkspaces(signal)
@@ -45,7 +55,7 @@ export function registerCommands(ctx: Context): void {
           await ctx.beav.open(url.toString())
           return { kind: 'success', text: `Opened the Beav ${command} flow.` }
         }
-        return { kind: 'error', text: 'Usage: /beav status | open | workspaces | new <request> | import <url> | save <url>' }
+        return { kind: 'error', text: 'Usage: /beav status | connect | open | workspaces | new <request> | import <url> | save <url>' }
       } catch (error) {
         return { kind: 'error', text: error instanceof Error ? error.message : 'Beav command failed' }
       }
