@@ -1,0 +1,45 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  npm:
+    if: startsWith(github.event.release.tag_name, 'v')
+    runs-on: macos-14
+    environment: npm
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: plugin
+      - uses: actions/checkout@v4
+        with:
+          repository: deepseek-ai/deepseek-harness
+          ref: 47f943859bef60e4160492346772ded9b24f765a
+          path: deepseek-harness
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+          cache-dependency-path: plugin/pnpm-lock.yaml
+      - name: Build Harness contracts
+        working-directory: deepseek-harness
+        run: pnpm install --frozen-lockfile && pnpm run build:lib
+      - name: Verify connector
+        working-directory: plugin
+        run: pnpm install --frozen-lockfile && pnpm check
+      - name: Verify release identity
+        working-directory: plugin
+        run: test "v$(node -p \"require('./package.json').version\")" = "${{ github.event.release.tag_name }}"
+      - name: Publish with provenance
+        working-directory: plugin
+        run: npm publish --access public --provenance

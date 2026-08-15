@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: plugin
+      - uses: actions/checkout@v4
+        with:
+          repository: deepseek-ai/deepseek-harness
+          ref: 47f943859bef60e4160492346772ded9b24f765a
+          path: deepseek-harness
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: plugin/pnpm-lock.yaml
+      - name: Build Harness contracts
+        working-directory: deepseek-harness
+        run: pnpm install --frozen-lockfile && pnpm run build:lib
+      - name: Install
+        working-directory: plugin
+        run: pnpm install --frozen-lockfile
+      - name: Check
+        working-directory: plugin
+        run: pnpm check
+      - name: Inspect package
+        working-directory: plugin
+        run: pnpm pack --json
