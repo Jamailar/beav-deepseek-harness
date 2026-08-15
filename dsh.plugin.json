@@ -1,0 +1,12 @@
+{
+  "name": "beav-deepseek-harness",
+  "description": "Native Beav tools, jobs, commands, references, and task UI for DeepSeek Harness",
+  "version": "0.1.0",
+  "entry": {
+    "name": "beav-deepseek-harness",
+    "inject": []
+  },
+  "client": {
+    "platform": "web"
+  }
+}

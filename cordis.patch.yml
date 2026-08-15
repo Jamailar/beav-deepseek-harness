@@ -1,0 +1,7 @@
+- insert:
+    - id: beav
+      name: beav-deepseek-harness
+      config:
+        tokenRef: BEAV_CREATOR_TOKEN
+        autoLaunch: on-demand
+        requestTimeoutMs: 30000
