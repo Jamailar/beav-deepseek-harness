@@ -1,7 +1,7 @@
 {
   "name": "beav-creator-dsh",
   "description": "Beav Creator AI tools, jobs, commands, references, and task UI for social-media content creation",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "entry": {
     "name": "beav-creator-dsh",
     "inject": []

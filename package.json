@@ -1,6 +1,6 @@
 {
   "name": "beav-creator-dsh",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Beav Creator AI for social-media content, images, video, knowledge, and durable workflows in DeepSeek Harness",
   "license": "MIT",
   "type": "module",

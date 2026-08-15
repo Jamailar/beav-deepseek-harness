@@ -144,7 +144,7 @@ export class BeavGatewayClient {
   }
 
   async delegate(input: BeavDelegateInput, signal?: AbortSignal): Promise<BeavTask> {
-    const body = await this.request('/tasks', { method: 'POST', body: JSON.stringify({ ...input, client: { name: 'DeepSeek Harness', version: '0.1.0' } }) }, signal)
+    const body = await this.request('/tasks', { method: 'POST', body: JSON.stringify({ ...input, client: { name: 'DeepSeek Harness', version: '0.1.1' } }) }, signal)
     return normalizeTask(record(body.task, 'task'), body.completion)
   }
 
