@@ -105,41 +105,41 @@ const pairingSchema = z.object({
 
 export const BEAV_INVOCATIONS: readonly InvocationDescriptor[] = [
   {
-    id: 'beav-deepseek-harness#beav/getStatus', service: 'beav', namespace: 'beav', method: 'getStatus',
+    id: 'beav-creator-dsh#beav/getStatus', service: 'beav', namespace: 'beav', method: 'getStatus',
     invocation: { kind: 'direct' }, parameters: [],
-    result: { mode: 'strict', typeSymbol: 'beav-deepseek-harness#BeavStatus', schema: statusSchema },
+    result: { mode: 'strict', typeSymbol: 'beav-creator-dsh#BeavStatus', schema: statusSchema },
   },
   {
-    id: 'beav-deepseek-harness#beav/listResources', service: 'beav', namespace: 'beav', method: 'listResources',
+    id: 'beav-creator-dsh#beav/listResources', service: 'beav', namespace: 'beav', method: 'listResources',
     invocation: { kind: 'direct' }, parameters: [],
-    result: { mode: 'strict', typeSymbol: 'beav-deepseek-harness#BeavResourceCandidate[]', schema: z.array(candidateSchema) },
+    result: { mode: 'strict', typeSymbol: 'beav-creator-dsh#BeavResourceCandidate[]', schema: z.array(candidateSchema) },
   },
   {
-    id: 'beav-deepseek-harness#beav/openApp', service: 'beav', namespace: 'beav', method: 'openApp',
+    id: 'beav-creator-dsh#beav/openApp', service: 'beav', namespace: 'beav', method: 'openApp',
     invocation: { kind: 'direct' }, parameters: [],
-    result: { mode: 'strict', typeSymbol: 'beav-deepseek-harness#boolean', schema: z.boolean() },
+    result: { mode: 'strict', typeSymbol: 'beav-creator-dsh#boolean', schema: z.boolean() },
   },
   {
-    id: 'beav-deepseek-harness#beav/beginPairing', service: 'beav', namespace: 'beav', method: 'beginPairing',
+    id: 'beav-creator-dsh#beav/beginPairing', service: 'beav', namespace: 'beav', method: 'beginPairing',
     invocation: { kind: 'direct' }, parameters: [],
-    result: { mode: 'strict', typeSymbol: 'beav-deepseek-harness#BeavPairingStatus', schema: pairingSchema },
+    result: { mode: 'strict', typeSymbol: 'beav-creator-dsh#BeavPairingStatus', schema: pairingSchema },
   },
   {
-    id: 'beav-deepseek-harness#beav/getPairingStatus', service: 'beav', namespace: 'beav', method: 'getPairingStatus',
+    id: 'beav-creator-dsh#beav/getPairingStatus', service: 'beav', namespace: 'beav', method: 'getPairingStatus',
     invocation: { kind: 'direct' },
     parameters: [{ name: 'requestId', wire: 'requestId', source: 'json', codec: { mode: 'strict', typeSymbol: 'string', schema: z.string().min(1) } }],
-    result: { mode: 'strict', typeSymbol: 'beav-deepseek-harness#BeavPairingStatus', schema: pairingSchema },
+    result: { mode: 'strict', typeSymbol: 'beav-creator-dsh#BeavPairingStatus', schema: pairingSchema },
   },
   {
-    id: 'beav-deepseek-harness#beav/configureToken', service: 'beav', namespace: 'beav', method: 'configureToken',
+    id: 'beav-creator-dsh#beav/configureToken', service: 'beav', namespace: 'beav', method: 'configureToken',
     invocation: { kind: 'direct' },
     parameters: [{ name: 'token', wire: 'token', source: 'json', codec: { mode: 'strict', typeSymbol: 'string', schema: z.string().min(1) } }],
-    result: { mode: 'strict', typeSymbol: 'beav-deepseek-harness#BeavStatus', schema: statusSchema },
+    result: { mode: 'strict', typeSymbol: 'beav-creator-dsh#BeavStatus', schema: statusSchema },
   },
   {
-    id: 'beav-deepseek-harness#beav/disconnect', service: 'beav', namespace: 'beav', method: 'disconnect',
+    id: 'beav-creator-dsh#beav/disconnect', service: 'beav', namespace: 'beav', method: 'disconnect',
     invocation: { kind: 'direct' }, parameters: [],
-    result: { mode: 'strict', typeSymbol: 'beav-deepseek-harness#BeavStatus', schema: statusSchema },
+    result: { mode: 'strict', typeSymbol: 'beav-creator-dsh#BeavStatus', schema: statusSchema },
   },
 ]
 

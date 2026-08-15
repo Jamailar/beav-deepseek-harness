@@ -2,7 +2,7 @@ import type { TypertContribution } from '@deepseek-ai/dsh-typert-registry/types'
 import { BEAV_INVOCATIONS } from '../shared/contract.ts'
 
 export const TYPERT_MANIFEST: TypertContribution = {
-  package: 'beav-deepseek-harness',
+  package: 'beav-creator-dsh',
   face: 'host',
   schemas: [],
   model: {

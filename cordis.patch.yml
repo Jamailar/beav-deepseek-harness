@@ -1,6 +1,6 @@
 - insert:
     - id: beav
-      name: beav-deepseek-harness
+      name: beav-creator-dsh
       config:
         tokenRef: BEAV_CREATOR_TOKEN
         autoLaunch: on-demand

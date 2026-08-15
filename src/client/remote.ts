@@ -3,7 +3,7 @@ import { BEAV_INVOCATIONS } from '../shared/contract.ts'
 import type { BeavPairingStatus, BeavResourceCandidate, BeavStatus } from '../shared/contract.ts'
 
 export const BEAV_REMOTE: TypertRemoteContribution = {
-  package: 'beav-deepseek-harness',
+  package: 'beav-creator-dsh',
   descriptors: BEAV_INVOCATIONS,
 }
 

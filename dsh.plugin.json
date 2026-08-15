@@ -1,9 +1,9 @@
 {
-  "name": "beav-deepseek-harness",
-  "description": "Native Beav tools, jobs, commands, references, and task UI for DeepSeek Harness",
+  "name": "beav-creator-dsh",
+  "description": "Beav Creator AI tools, jobs, commands, references, and task UI for social-media content creation",
   "version": "0.1.0",
   "entry": {
-    "name": "beav-deepseek-harness",
+    "name": "beav-creator-dsh",
     "inject": []
   },
   "client": {

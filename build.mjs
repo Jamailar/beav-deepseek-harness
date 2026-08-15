@@ -27,7 +27,7 @@ await build({
   sourcemap: true,
   jsx: 'automatic',
   external: [...external, 'react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime', 'scheduler'],
-  banner: { js: "window.__ModuleLoader__.load({ id: 'beav-deepseek-harness', factory: (require) => { var module = { exports: {} }; var exports = module.exports;" },
+  banner: { js: "window.__ModuleLoader__.load({ id: 'beav-creator-dsh', factory: (require) => { var module = { exports: {} }; var exports = module.exports;" },
   footer: { js: 'return module.exports; } });' },
 })
 

@@ -19,7 +19,7 @@ export function BeavSettingsCard({ store }: BeavSettingsCardProps) {
   const [connectionFailed, setConnectionFailed] = useState(false)
   return (
     <li style={{ listStyle: 'none', padding: 16, border: '1px solid var(--border, #d8d8d8)', borderRadius: 12 }}>
-      <h3 style={{ margin: 0 }}>Beav</h3>
+      <h3 style={{ margin: 0 }}>Beav Creator</h3>
       <p style={{ margin: '6px 0' }}>{status.connected ? 'Connected' : 'Not connected'}{status.version ? ` · ${status.version}` : ''}</p>
       <p style={{ margin: '6px 0 12px', opacity: 0.75 }}>{status.message}</p>
       {!status.configured ? <div style={{ marginBottom: 10 }}>

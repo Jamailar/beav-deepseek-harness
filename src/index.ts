@@ -14,7 +14,7 @@ import { registerCommands } from './agent/commands.ts'
 import { registerPrompt } from './agent/prompt.ts'
 import './agent/events.ts'
 
-export const name = 'beav-deepseek-harness'
+export const name = 'beav-creator-dsh'
 export const inject = ['credentials', 'tools', 'commands', 'jobs', 'systemPrompt', 'typert']
 
 export interface Config {

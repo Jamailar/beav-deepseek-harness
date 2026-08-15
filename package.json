@@ -1,7 +1,7 @@
 {
-  "name": "beav-deepseek-harness",
+  "name": "beav-creator-dsh",
   "version": "0.1.0",
-  "description": "Native Beav plugin for DeepSeek Harness",
+  "description": "Beav Creator AI for social-media content, images, video, knowledge, and durable workflows in DeepSeek Harness",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@11.7.0",
@@ -131,5 +131,5 @@
   },
   "homepage": "https://github.com/Jamailar/beav-deepseek-harness#readme",
   "bugs": "https://github.com/Jamailar/beav-deepseek-harness/issues",
-  "keywords": ["beav", "deepseek-harness", "dsh", "cordis", "plugin"]
+  "keywords": ["beav", "creator", "content-creation", "social-media", "xiaohongshu", "video", "image-generation", "ai-agent", "deepseek-harness", "dsh-plugin", "cordis"]
 }

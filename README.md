@@ -1,6 +1,6 @@
-# Beav for DeepSeek Harness
+# Beav Creator
 
-The native DeepSeek Harness connector for Beav. It exposes Beav workspaces, projects, durable creator tasks, and verified artifacts through Cordis services, Harness tools, background jobs, slash commands, session events, and Web client contributions. It does not use MCP.
+Beav Creator brings Beav's social-media AI creation workflows into DeepSeek Harness. It exposes Beav workspaces, projects, durable content tasks, and verified article, image, audio, and video artifacts through Cordis services, Harness tools, background jobs, slash commands, session events, and Web client contributions. It does not use MCP.
 
 ## Install
 
@@ -13,10 +13,10 @@ Requirements:
 Install into a Harness profile:
 
 ```bash
-dsh plugin --profile web add beav-deepseek-harness
+dsh plugin --profile web add beav-creator-dsh
 ```
 
-Start that profile, open **Settings → Plugins → Beav**, and select **Connect Beav**. Harness opens `beav://connect/authorize`; Beav starts if needed and shows the requested permissions. After you approve in Beav, the connector completes a five-minute, single-use PKCE exchange and stores the resulting credential under `BEAV_CREATOR_TOKEN`. No token is copied through the clipboard, URL, browser client, chat, session event, or tool result.
+Start that profile, open **Settings → Plugins → Beav Creator**, and select **Connect Beav**. Harness opens `beav://connect/authorize`; Beav starts if needed and shows the requested permissions. After you approve in Beav, the connector completes a five-minute, single-use PKCE exchange and stores the resulting credential under `BEAV_CREATOR_TOKEN`. No token is copied through the clipboard, URL, browser client, chat, session event, or tool result.
 
 If Beav is not running, an operation that needs it opens `beav://open` once and performs a bounded health retry. You can override the local endpoint or credential reference in the profile patch:
 

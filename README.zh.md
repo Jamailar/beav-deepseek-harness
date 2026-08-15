@@ -1,16 +1,16 @@
-# Beav for DeepSeek Harness
+# Beav Creator
 
-这是 Beav 的 DeepSeek Harness 原生连接器。它通过 Cordis Service、Harness tools、background jobs、slash commands、session events 和 Web Client contributions 暴露 Beav 工作区、项目、持久化创作任务和已验证产物，不使用 MCP。
+Beav Creator 把 Beav 的自媒体 AI 创作能力带入 DeepSeek Harness。它通过 Cordis Service、Harness tools、background jobs、slash commands、session events 和 Web Client contributions 暴露 Beav 工作区、项目、持久化内容任务，以及经过验证的文章、图片、音频和视频产物，不使用 MCP。
 
 ## 安装
 
 要求：Beav 2.7.4 或更高版本、DeepSeek Harness `0.1.0-rc.6`、Node.js 22 或更高版本。
 
 ```bash
-dsh plugin --profile web add beav-deepseek-harness
+dsh plugin --profile web add beav-creator-dsh
 ```
 
-启动该 Profile 后，进入 **Settings → Plugins → Beav** 并点击 **Connect Beav**。插件会打开 `beav://connect/authorize`；Beav 未运行时会自动启动，并在 APP 内显示申请的权限。用户点击允许后，插件通过五分钟有效、只能交换一次的 PKCE 配对自动取得凭据，并由 Harness credentials provider 保存到 `BEAV_CREATOR_TOKEN`。Token 不经过剪贴板、URL、浏览器 Client、聊天、Session Event 或 Tool Result。
+启动该 Profile 后，进入 **Settings → Plugins → Beav Creator** 并点击 **Connect Beav**。插件会打开 `beav://connect/authorize`；Beav 未运行时会自动启动，并在 APP 内显示申请的权限。用户点击允许后，插件通过五分钟有效、只能交换一次的 PKCE 配对自动取得凭据，并由 Harness credentials provider 保存到 `BEAV_CREATOR_TOKEN`。Token 不经过剪贴板、URL、浏览器 Client、聊天、Session Event 或 Tool Result。
 
 Beav 未运行时，第一个需要 Beav 的操作会调用一次 `beav://open`，然后进行有界健康重试。插件只接受 loopback HTTP endpoint。
 
