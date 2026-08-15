@@ -39,7 +39,9 @@ jobs:
         run: pnpm install --frozen-lockfile && pnpm check
       - name: Verify release identity
         working-directory: plugin
-        run: test "v$(node -p \"require('./package.json').version\")" = "${{ github.event.release.tag_name }}"
+        run: |
+          package_version=$(node -p "require('./package.json').version")
+          test "v$package_version" = "${{ github.event.release.tag_name }}"
       - name: Publish with provenance
         working-directory: plugin
         run: |
