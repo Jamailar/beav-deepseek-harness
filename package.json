@@ -1,7 +1,7 @@
 {
   "name": "beav-creator-dsh",
-  "version": "0.1.1",
-  "description": "Beav Creator AI for social-media content, images, video, knowledge, and durable workflows in DeepSeek Harness",
+  "version": "0.1.2",
+  "description": "Beav Creator for Xiaohongshu (RED/RedNote), social-media AI operations, content research, copywriting, images, audio, and video in DeepSeek Harness. 小红书与社媒AI运营。",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@11.7.0",
@@ -131,5 +131,5 @@
   },
   "homepage": "https://github.com/Jamailar/beav-deepseek-harness#readme",
   "bugs": "https://github.com/Jamailar/beav-deepseek-harness/issues",
-  "keywords": ["beav", "creator", "content-creation", "social-media", "xiaohongshu", "video", "image-generation", "ai-agent", "deepseek-harness", "dsh-plugin", "cordis"]
+  "keywords": ["beav", "creator", "xiaohongshu", "rednote", "xiaohongshu-ai", "social-media", "social-media-ai", "social-media-management", "social-media-marketing", "content-creation", "content-operations", "content-marketing", "creator-economy", "copywriting", "image-generation", "audio-generation", "video-generation", "ai-agent", "deepseek-harness", "dsh-plugin", "cordis"]
 }

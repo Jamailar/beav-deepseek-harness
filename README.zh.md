@@ -1,6 +1,6 @@
 # Beav Creator
 
-Beav Creator 把 Beav 的自媒体 AI 创作能力带入 DeepSeek Harness。它通过 Cordis Service、Harness tools、background jobs、slash commands、session events 和 Web Client contributions 暴露 Beav 工作区、项目、持久化内容任务，以及经过验证的文章、图片、音频和视频产物，不使用 MCP。
+Beav Creator 把小红书（RED/RedNote）、社交媒体运营和自媒体 AI 创作能力带入 DeepSeek Harness。可用于小红书选题与趋势研究、知识库管理、文案创作、封面与配图、音频、短视频，以及可恢复的多步骤内容生产。它通过 Cordis Service、Harness tools、background jobs、slash commands、session events 和 Web Client contributions 暴露 Beav 工作区、项目、任务、审批和经过验证的产物，不使用 MCP。
 
 ## 安装
 
@@ -16,7 +16,7 @@ Beav 未运行时，第一个需要 Beav 的操作会调用一次 `beav://open`�
 
 ## 使用
 
-- 直接说：“用 Beav 把发布工作区里最近的资料做成文章、封面和 60 秒视频。”
+- 直接说：“用 Beav 研究一个小红书选题，把发布工作区里最近的资料做成笔记、封面和 60 秒视频。”
 - 输入 `@beav` 精确选择工作区或项目。
 - 使用 `/beav connect`、`/beav status`、`/beav open`、`/beav workspaces`、`/beav new`、`/beav import`、`/beav save` 执行不需要模型轮次的快捷操作。
 - 长任务显示为 Harness 原生 Job 和可重放的 Beav 任务卡。

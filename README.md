@@ -1,6 +1,6 @@
 # Beav Creator
 
-Beav Creator brings Beav's social-media AI creation workflows into DeepSeek Harness. It exposes Beav workspaces, projects, durable content tasks, and verified article, image, audio, and video artifacts through Cordis services, Harness tools, background jobs, slash commands, session events, and Web client contributions. It does not use MCP.
+Beav Creator brings Xiaohongshu (RED/RedNote), social-media operations, and creator AI workflows into DeepSeek Harness. Use it for topic and trend research, knowledge management, copywriting, cover and post images, audio, short video, and durable multi-step content production. It exposes Beav workspaces, projects, tasks, approvals, and verified artifacts through Cordis services, Harness tools, background jobs, slash commands, session events, and Web client contributions. It does not use MCP.
 
 ## Install
 
@@ -34,7 +34,7 @@ Only loopback HTTP endpoints are accepted.
 
 ## Use
 
-- Ask naturally: “Use Beav to turn the latest knowledge in my launch workspace into an article, cover images, and a 60-second video.”
+- Ask naturally: “Use Beav to research a Xiaohongshu topic and turn the latest knowledge in my launch workspace into a post, cover images, and a 60-second video.”
 - Type `@beav` to select a stable workspace or project reference.
 - Use `/beav connect`, `/beav status`, `/beav open`, `/beav workspaces`, `/beav new`, `/beav import`, or `/beav save` for direct actions without a model turn.
 - Long-running work appears as a native Harness job and a replayable Beav task card.
