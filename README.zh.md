@@ -4,7 +4,7 @@ Beav Creator 把小红书（RED/RedNote）、社交媒体运营和自媒体 AI �
 
 ## 安装
 
-要求：Beav 2.7.4 或更高版本、DeepSeek Harness `0.1.0-rc.6` 或更高版本（`rc.7` / `rc.8` 的 Web Client 需要 `beav-creator-dsh@0.1.3` 及以上）、Node.js 22 或更高版本。
+要求：Beav 2.7.4 或更高版本、DeepSeek Harness `0.1.0-rc.6` 或更高版本（`rc.7` / `rc.8` 的 Web Client 需要 `beav-creator-dsh@0.1.4` 及以上）、Node.js 22 或更高版本。
 
 ```bash
 dsh plugin --profile web add beav-creator-dsh

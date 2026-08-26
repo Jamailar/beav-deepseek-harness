@@ -1,7 +1,7 @@
 {
   "name": "beav-creator-dsh",
   "description": "Xiaohongshu (RED/RedNote), social-media AI operations, research, copywriting, image, audio, and video workflows. 小红书与社媒AI运营。",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "entry": {
     "name": "beav-creator-dsh",
     "inject": []

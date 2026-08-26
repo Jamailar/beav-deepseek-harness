@@ -7,7 +7,7 @@ Beav Creator brings Xiaohongshu (RED/RedNote), social-media operations, and crea
 Requirements:
 
 - Beav 2.7.4 or later
-- DeepSeek Harness `0.1.0-rc.6` or later (`rc.7` / `rc.8` web clients require `beav-creator-dsh@0.1.3` or later)
+- DeepSeek Harness `0.1.0-rc.6` or later (`rc.7` / `rc.8` web clients require `beav-creator-dsh@0.1.4` or later)
 - Node.js 22 or later
 
 Install into a Harness profile:

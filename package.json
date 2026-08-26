@@ -1,6 +1,6 @@
 {
   "name": "beav-creator-dsh",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Beav Creator for Xiaohongshu (RED/RedNote), social-media AI operations, content research, copywriting, images, audio, and video in DeepSeek Harness. 小红书与社媒AI运营。",
   "license": "MIT",
   "type": "module",
