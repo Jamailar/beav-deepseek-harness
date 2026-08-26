@@ -12,6 +12,7 @@ import { TYPERT_MANIFEST } from './runtime/typert.ts'
 import { registerTools } from './agent/tools.ts'
 import { registerCommands } from './agent/commands.ts'
 import { registerPrompt } from './agent/prompt.ts'
+import { BEAV_SETTINGS_NAMESPACE } from './shared/contract.ts'
 import './agent/events.ts'
 
 export const name = 'beav-creator-dsh'
@@ -33,6 +34,10 @@ export const Config = z.object({
 
 export function apply(ctx: Context, input?: Config): void {
   const config = Config(input ?? {})
+  ctx.inject(['settings'], (scoped) => {
+    const settings = (scoped as unknown as { settings: { register: (ns: string, schema: unknown, options?: { base?: unknown }) => void } }).settings
+    settings.register(BEAV_SETTINGS_NAMESPACE, Config, { base: config })
+  })
   new BeavService(ctx, {
     ...(config.endpoint?.trim() ? { endpoint: config.endpoint.trim() } : {}),
     tokenRef: credentialRef(config.tokenRef), requestTimeoutMs: config.requestTimeoutMs, autoLaunch: config.autoLaunch,

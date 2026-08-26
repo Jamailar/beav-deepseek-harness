@@ -1,6 +1,9 @@
 import { z } from 'zod'
 import type { InvocationDescriptor } from '@deepseek-ai/dsh-typert-protocol'
 
+/** Host settings namespace and Web settings-card slot key. */
+export const BEAV_SETTINGS_NAMESPACE = 'beav'
+
 export type BeavRunStatus = 'queued' | 'awaiting_approval' | 'running' | 'completed' | 'cancelled' | 'failed' | 'expired'
 
 export interface BeavStatus {

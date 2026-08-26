@@ -3,7 +3,7 @@ import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
 import type { InputTriggerServiceContract } from '@deepseek-ai/dsh-client-ui-input-trigger/client'
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type {} from '@deepseek-ai/dsh-client-ui-settings-plugins/client'
-import type { BeavStatus } from '../shared/contract.ts'
+import { BEAV_SETTINGS_NAMESPACE, type BeavStatus } from '../shared/contract.ts'
 import { BEAV_REMOTE, type BeavRemoteFace } from './remote.ts'
 import { createBeavInputSource } from './input-source.ts'
 import { beavTaskDefinition } from './conversation.ts'
@@ -70,10 +70,15 @@ export function apply(ctx: ClientContext): void {
     inject: () => ({ openBeav: () => store.open() }),
   }, BeavTaskNode))
 
+  // rc.6 declared this slot as a list (`id`); rc.7+ declared it keyed (`key`).
+  // Keep both so one bundle boots on either contract.
   ctx.slots.inject('settings.plugin.item', () => ctx.slots.register({
-    name: 'settings.plugin.item', id: 'beav', order: 40,
+    name: 'settings.plugin.item',
+    id: 'beav',
+    key: BEAV_SETTINGS_NAMESPACE,
+    order: 40,
     inject: () => ({ store }),
-  }, BeavSettingsCard))
+  } as { name: 'settings.plugin.item'; id: string; order: number; inject: () => { store: BeavStatusStore } }, BeavSettingsCard))
 
   const inputTriggers = ctx.get('inputTriggers') as InputTriggerServiceContract
   const source = createBeavInputSource(async (signal) => {
