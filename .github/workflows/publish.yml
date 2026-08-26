@@ -28,7 +28,6 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-          registry-url: https://registry.npmjs.org
           cache: pnpm
           cache-dependency-path: plugin/pnpm-lock.yaml
       - name: Build Harness contracts
@@ -45,6 +44,7 @@ jobs:
       - name: Publish with provenance
         working-directory: plugin
         run: |
+          set -euo pipefail
           package_name=$(node -p "require('./package.json').name")
           package_version=$(node -p "require('./package.json').version")
           published_git_head=$(npm view "$package_name@$package_version" gitHead --json 2>/dev/null | tr -d '"' || true)
@@ -56,4 +56,9 @@ jobs:
             exit 0
           fi
 
+          # Node 22 ships npm 10, which cannot complete the OIDC trusted-publisher
+          # exchange. setup-node's registry-url also writes an empty _authToken that
+          # makes npm skip OIDC entirely.
+          npm install -g npm@latest
+          npm --version
           npm publish --access public --provenance
